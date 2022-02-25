@@ -1,0 +1,8 @@
+__default__:
+ partition: "normal"
+ cpus: "{threads}"
+ mem: "65g"
+bowtie2_index:
+ mem: "32g"
+bowtie2_mapping:
+ mem: "65g"

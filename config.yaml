@@ -1,0 +1,11 @@
+trim:
+        length: 30
+        window: "4:18"
+        lead: 28
+        trail: 28
+
+data: "/home/a-m/fazal2/cisplat_aza_spike_chip/data/raw_fastq"
+fasta: "/home/a-m/fazal2/chip_workflow/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
+
+type: "SE"
+black: "hg38.blacklist.bed"
