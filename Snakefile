@@ -7,7 +7,7 @@ DATA_DIR = config["data"]
 if config["type"]=="SE":
 	SAMPLES, = glob_wildcards(DATA_DIR + "/{sample,[^(/|INPUT)]+}.fastq.gz")
 elif config["type"]=="PE":
-        SAMPLES, = glob_wildcards(DATA_DIR + "/{sample,[^/]+}_R1.fastq.gz")
+        SAMPLES, = glob_wildcards(DATA_DIR + "/{sample,[^/|INPUT]+}_R1.fastq.gz")
 else:
      	raise ValueError('please specify only "SE" or "PE" for the "type" parameter in the config file.')
 
@@ -18,7 +18,7 @@ def macs_input(wildcards):
 
 rule all:
 	input:
-              	bam = expand("macs2/{sample}_peaks.xls", sample=SAMPLES)
+              	bam = expand("macs/{sample}_peaks.xls", sample=SAMPLES)
 
 if config["type"]=="SE":
         rule trim:
@@ -167,10 +167,12 @@ rule callpeaks:
 		t="filtered/{sample}_rmdup.bam",
 		c=macs_input
 	output:
-		"macs2/{sample}_peaks.xls"
+		"macs/{sample}_peaks.xls"
+	params:
+		prefix = lamda wildcards: {wildcards.sample}
 	shell:
 		"""
-		mkdir -p macs2
-		module load MACS2/2.2.5-IGB-gcc-4.9.4-Python-3.6.1
-		macs2 callpeak -t {input.t} -c {input.c} -f BAM --gsize 3.0e9 --broad --broad-cutoff 0.1  --nomodel --extsize 125 -n $prefix --bdg --outdir macs2
+		mkdir -p macs
+		module load MACS2
+		macs2 callpeak -t {input.t} -c {input.c} -f BAM --gsize 3.0e9 --broad --broad-cutoff 0.1  --nomodel --extsize 125 -n {params.prefix} --bdg --outdir macs
 		"""
